@@ -1,0 +1,51 @@
+Elastic Search Documentation (Single point)
+
+sysctl -w vm.max_map_count=262144  ---> do this before you start
+
+or Max Virtual Memory low error pops
+
+Pulling the docker image
+docker pull docker.elastic.co/elasticsearch/elasticsearch:8.2.3
+Single node
+docker network create elastic
+starting ES
+docker run --name es01 --net elastic -p 9200:9200 -p 9300:9300 -it docker.elastic.co/elasticsearch/elasticsearch:8.2.3
+Copy the security certificate
+docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
+
+curl --cacert http_ca.crt -u elastic https://localhost:9200
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> Elasticsearch security features have been automatically configured!
+-> Authentication is enabled and cluster connections are encrypted.
+
+->  Password for the elastic user (reset with `bin/elasticsearch-reset-password -u elastic`):
+  R*KbouRSMSwPX_UMWuCY
+
+->  HTTP CA certificate SHA-256 fingerprint:
+  cfa156a193736167e1cb0ff46754fb7382229e1c7037ed90c8250a10db321f96
+
+->  Configure Kibana to use this cluster:
+* Run Kibana and click the configuration link in the terminal when Kibana starts.
+* Copy the following enrollment token and paste it into Kibana in your browser (valid for the next 30 minutes):
+  eyJ2ZXIiOiI4LjIuMyIsImFkciI6WyIxNzIuMTguMC4yOjkyMDAiXSwiZmdyIjoiY2ZhMTU2YTE5MzczNjE2N2UxY2IwZmY0Njc1NGZiNzM4MjIyOWUxYzcwMzdlZDkwYzgyNTBhMTBkYjMyMWY5NiIsImtleSI6ImFacDBiSUVCQ3FzcVh5dzBrdTM2Onc4VkdSeTM1VHNhelVHOVA2Z1NNMFEifQ==
+
+-> Configure other nodes to join this cluster:
+* Copy the following enrollment token and start new Elasticsearch nodes with `bin/elasticsearch --enrollment-token <token>` (valid for the next 30 minutes):
+  eyJ2ZXIiOiI4LjIuMyIsImFkciI6WyIxNzIuMTguMC4yOjkyMDAiXSwiZmdyIjoiY2ZhMTU2YTE5MzczNjE2N2UxY2IwZmY0Njc1NGZiNzM4MjIyOWUxYzcwMzdlZDkwYzgyNTBhMTBkYjMyMWY5NiIsImtleSI6ImFKcDBiSUVCQ3FzcVh5dzBrdTM0Olh0aHJpNVQxU3N1WGJZbDBXWUNtcHcifQ==
+
+  If you're running in Docker, copy the enrollment token and run:
+  `docker run -e "ENROLLMENT_TOKEN=<token>" docker.elastic.co/elasticsearch/elasticsearch:8.2.3`
