@@ -13,7 +13,7 @@ docker run --name es01 --net elastic -p 9200:9200 -p 9300:9300 -it docker.elasti
 Copy the security certificate
 docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
 
-curl --cacert http_ca.crt -u elastic https://localhost:9200
+curl --cacert http_ca.crt -u elastic https://localhost:yourportnumber
 
 
 
@@ -33,10 +33,10 @@ curl --cacert http_ca.crt -u elastic https://localhost:9200
 -> Authentication is enabled and cluster connections are encrypted.
 
 ->  Password for the elastic user (reset with `bin/elasticsearch-reset-password -u elastic`):
-  R*KbouRSMSwPX_UMWuCY
+  your configured password
 
 ->  HTTP CA certificate SHA-256 fingerprint:
-  cfa156a193736167e1cb0ff46754fb7382229e1c7037ed90c8250a10db321f96
+  your certificate fingerprint ID
 
 ->  Configure Kibana to use this cluster:
 * Run Kibana and click the configuration link in the terminal when Kibana starts.
