@@ -1,0 +1,5 @@
+check if any container with same port running
+docker ps
+
+elasticsearch password
+uAeCwOfxbO=OLDMI=CZt

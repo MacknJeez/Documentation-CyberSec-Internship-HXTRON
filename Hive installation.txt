@@ -1,0 +1,8 @@
+Installing TheHiveProject
+*Assuming you have docker and docker-compose installed*
+
+For hive3 basic features installation(Only Hive and Cortex):
+1. Pull files from github using: git clone https://github.com/TheHive-Project/Docker-Templates
+2. recursively cd into Docker-Templates ->docker->thehive3
+3.  type docker-compose up to compose hive3 and elasticsearch containers and run
+

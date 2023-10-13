@@ -1,0 +1,62 @@
+working cortex install:
+
+usr: admin201|hx119
+pwd: admin201|hx119
+API key[admin201,hx119]: blkCApKc2WCqLGGP+LoTjb76yr1EkED4,ULz8t7MnHpr/4e13cc60qNggrFcM5ZSY
+check if ports 9001 and 9200 are being used, if so either stop or remove processes
+
+list services running on port exmp
+lsof -i :exmp
+(if lsof not installed, run command: yum install lsof)
+
+docker port [containername] 
+docker stop [container id]
+docker rm -f $(docker ps -aq) [removes containers installed in the machine]
+docker volume rm $(docker volume ls -q) [removes volumes installed in the machine]
+
+paste the .yml with the changed repo and run docker compose up | docker-compose up [depending on the version of docker you have]
+
+
+
+--------------------------------------------The .yml file----------------------------------------
+version: "3"
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.4
+    restart: unless-stopped
+    mem_limit: 512m
+    ports:
+      - "0.0.0.0:9200:9200"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - cluster.name=hive
+      - http.host=0.0.0.0
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    volumes:
+      - elasticsearchdata:/usr/share/elasticsearch/data
+    networks:
+      - SOC_NET
+
+  cortex:
+    image: thehiveproject/cortex:latest
+    restart: unless-stopped
+    environment:
+      - job_directory=/opt/cortex/jobs
+    volumes:
+      - cortexdata:/var/run/docker.sock
+      - cortexdata:/opt/cortex/jobs
+      - cortexdata:/var/log/cortex
+      - cortexdata:/cortex/application.conf
+    depends_on:
+      - elasticsearch
+    ports:
+      - "0.0.0.0:9001:9001"
+    networks:
+      - SOC_NET
+volumes:
+  elasticsearchdata:
+  cortexdata:
+networks:
+    SOC_NET:
+          driver: bridge

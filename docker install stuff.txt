@@ -1,0 +1,75 @@
+Installing Docker Container software in VM
+-Set up repository: sudo yum install -y yum-utils
+        sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+-Install Docker:    sudo yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+-Starting Docker:   sudo systemctl start docker (its small L not 1)
+-Check if Docker 
+is running:      sudo docker run hello-world
+
+
+Cortex Install Guide:
+-Load repo:      sudo rpm --import https://raw.githubusercontent.com/TheHive-Project/TheHive/master/PGP-PUBLIC-KEY
+-create file with
+config:       sudo nano /etc/yum.repos.d/thehive-project.repo
+-paste config into
+file:        [thehive-project]
+        enabled=1
+        priority=1
+        name=TheHive-Project RPM repository
+        baseurl=https://rpm.thehive-project.org/release/noarch
+        gpgcheck=1
+-install from
+repo:        yum install cortex
+
+
+-create file:      sudo nano /etc/cortex/application.conf
+-paste in terminal: 
+(cat << _EOF_
+# Secret key
+# ~~~~~
+# The secret key is used to secure cryptographics functions.
+# If you deploy your application to several instances be sure to use the same key!
+play.http.secret.key="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 64 | head -n 1)"
+_EOF_
+
+search.uri = "http://127.0.0.1:9200"
+analyzer.urls = "https://download.thehive-project.org/analyzers.json"
+
+) | sudo tee -a /etc/cortex/application.conf
+
+IMPORTANT USE SAME KEY FOR ALL INSTANCES 
+play.http.secret.key="Wq1DBsX7g6OAP84jvA6Pfj7MDmabOcoqzAziOhYKxW2XxgWE2JSFX5680F4pkitQ"
+-check if cortex 
+is running:      systemctl status cortex
+
+
+
+Installing Cortex in Docker
+-Create .yml file:  sudo nano docker-compose.yml (error elsewise)
+-paste content in 
+file:
+        version: '2'
+        services:
+          elasticsearch:
+           image: 'elasticsearch:7.11.1'
+            environment:
+             - http.host=0.0.0.0
+              - discovery.type=single-node
+              - script.allowed_types=inline
+              - thread_pool.search.queue_size=100000
+             - thread_pool.write.queue_size=10000
+          cortex:
+            image: 'thehiveproject/cortex:3.1.1-1'
+           environment:
+            - 'job_directory=${job_directory}'
+           volumes:
+              - '/var/run/docker.sock:/var/run/docker.sock'
+              - '${job_directory}:${job_directory}'
+            depends_on:
+              -  elasticsearch
+            ports:
+              - '0.0.0.0:9001:9001'
+
+-Wait for download and extracting of files
+- fix error?
