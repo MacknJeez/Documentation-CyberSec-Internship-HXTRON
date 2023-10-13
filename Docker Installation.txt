@@ -1,0 +1,25 @@
+Docker - containerzation application
+
+# - super user
+$ - normal user
+
+
+To install something use sudo
+
+Docker installation
+
+Check if its already installed
+Install using repository
+$ sudo yum install -y yum-utils
+$ sudo yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+
+Instal docker engine
+$ sudo yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+Start docker
+$ sudo systemctl start docker
+
+Verify docker is installed correctly
+$ sudo docker run hello-world
